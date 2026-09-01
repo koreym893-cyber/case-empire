@@ -1,0 +1,3232 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Case Empire</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+html, body {
+    touch-action: manipulation;
+    overscroll-behavior: none;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: radial-gradient(circle at top, #182033, #080b11 60%, #040509);
+    color: white;
+    min-height: 100vh;
+}
+
+button {
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+button:active {
+    transform: scale(.97);
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(8,11,17,.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #30394a;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.logo span {
+    color: #a84cff;
+}
+
+.balance {
+    background: #07170e;
+    border: 1px solid #21b85b;
+    color: #4dff88;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.container {
+    width: min(1250px, 100%);
+    margin: auto;
+    padding: 18px;
+}
+
+.section {
+    background: rgba(17,23,34,.95);
+    border: 1px solid #2c3545;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 18px;
+}
+
+.section-title {
+    margin: 0 0 15px;
+    font-size: 21px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(145px,1fr));
+    gap: 10px;
+}
+
+.stat {
+    background: #151c29;
+    border: 1px solid #303a4c;
+    border-radius: 11px;
+    padding: 14px;
+}
+
+.stat-value {
+    font-size: 21px;
+    font-weight: bold;
+    color: #4dff88;
+}
+
+.stat-label {
+    color: #8f9aaa;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.stat-luck {
+    color: #ffd84d;
+}
+
+.work-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 18px;
+}
+
+.work-button {
+    width: 100%;
+    min-height: 120px;
+    border-radius: 15px;
+    background: linear-gradient(135deg,#6528e8,#9b35ff);
+    color: white;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.work-info {
+    text-align: center;
+    color: #929dae;
+    margin-top: 12px;
+}
+
+.work-upgrade {
+    background: #151c29;
+    border: 1px solid #303a4c;
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.upgrade-button {
+    width: 100%;
+    padding: 13px;
+    border-radius: 9px;
+    background: #238636;
+    color: white;
+    font-weight: bold;
+}
+
+.case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 14px;
+}
+
+.case-card {
+    background: #151c29;
+    border: 1px solid #303a4c;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.case-icon {
+    font-size: 55px;
+    text-align: center;
+    margin: 8px 0;
+}
+
+.case-price {
+    color: #4dff88;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.case-odds {
+    color: #919cab;
+    font-size: 12px;
+    line-height: 1.7;
+    margin: 12px 0;
+}
+
+.buy-case {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background: #238636;
+    color: white;
+    font-weight: bold;
+}
+
+.opening {
+    overflow: hidden;
+}
+
+.opening-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.opening-title {
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.opening-case-name {
+    color: #4dff88;
+    font-weight: bold;
+}
+
+.carousel-window {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 315px;
+    border-radius: 12px;
+    background: #080b11;
+    border: 1px solid #313b4d;
+}
+
+.carousel-window::before,
+.carousel-window::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 110px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.carousel-window::before {
+    left: 0;
+    background: linear-gradient(90deg,#080b11,transparent);
+}
+
+.carousel-window::after {
+    right: 0;
+    background: linear-gradient(270deg,#080b11,transparent);
+}
+
+.carousel {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateX(0);
+}
+
+.marker {
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #ffd84d;
+    transform: translateX(-50%);
+    box-shadow: 0 0 18px #ffd84d;
+}
+
+.marker::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 16px solid #ffd84d;
+}
+
+.marker::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 16px solid #ffd84d;
+}
+
+.car-card {
+    flex: 0 0 205px;
+    height: 275px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,.18);
+    position: relative;
+    overflow: hidden;
+}
+
+.car-art {
+    width: 175px;
+    height: 125px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px;
+    filter: drop-shadow(0 12px 12px rgba(0,0,0,.55));
+}
+
+.car-name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.car-rarity {
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.car-price {
+    color: #4dff88;
+    font-weight: bold;
+}
+
+.r-common {
+    background: linear-gradient(145deg,#252b35,#11151c);
+}
+
+.r-uncommon {
+    background: linear-gradient(145deg,#0d4725,#102218);
+}
+
+.r-rare {
+    background: linear-gradient(145deg,#123e69,#111d31);
+}
+
+.r-epic {
+    background: linear-gradient(145deg,#4b176f,#21122f);
+}
+
+.r-legendary {
+    background: linear-gradient(145deg,#75420d,#2e1c0a);
+}
+
+.r-mythic {
+    background: linear-gradient(145deg,#701c35,#32111c);
+}
+
+.r-ultra {
+    background: linear-gradient(145deg,#75600c,#312807);
+}
+
+.r-divine {
+    background: linear-gradient(145deg,#eeeeee,#666666);
+    color: #050505;
+}
+
+.open-button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 14px;
+    border-radius: 10px;
+    background: linear-gradient(135deg,#7135e8,#a333ff);
+    color: white;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.open-button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.inventory {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+    gap: 12px;
+}
+
+.inventory-card {
+    border: 2px solid #303a4c;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.inventory-car {
+    font-size: 65px;
+    text-align: center;
+}
+
+.inventory-name {
+    text-align: center;
+    font-weight: bold;
+}
+
+.inventory-info {
+    text-align: center;
+    color: #8f99a8;
+    font-size: 13px;
+    margin: 7px 0;
+}
+
+.sell-button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    background: #da3633;
+    color: white;
+    font-weight: bold;
+}
+
+.sell-all {
+    background: #da3633;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0,0,0,.92);
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.result {
+    width: min(500px,100%);
+    text-align: center;
+    padding: 30px;
+    border-radius: 20px;
+    background: #111722;
+    border: 1px solid #39445a;
+    animation: resultPop .45s ease;
+}
+
+@keyframes resultPop {
+    from {
+        transform: scale(.5);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.result-car {
+    font-size: 120px;
+}
+
+.result-rarity {
+    font-size: 30px;
+    font-weight: 900;
+    margin: 10px;
+}
+
+.result-name {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.result-value {
+    color: #4dff88;
+    font-size: 21px;
+    margin: 12px;
+}
+
+.continue {
+    padding: 13px 35px;
+    background: #7135e8;
+    color: white;
+    border-radius: 9px;
+    font-weight: bold;
+}
+
+.reset {
+    padding: 12px 20px;
+    border-radius: 8px;
+    background: #da3633;
+    color: white;
+    font-weight: bold;
+}
+
+.small {
+    color: #929dae;
+    font-size: 13px;
+}
+
+@media(max-width:750px) {
+
+    .header {
+        flex-direction: column;
+    }
+
+    .work-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .carousel-window {
+        height: 290px;
+    }
+
+    .car-card {
+        flex-basis: 185px;
+        height: 255px;
+    }
+
+    .car-art {
+        font-size: 75px;
+    }
+}
+
+
+/* Extra phone-friendly sizing */
+@media(max-width:750px) {
+    .container { padding: 10px; }
+    .section { padding: 14px; border-radius: 13px; }
+    .opening-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .carousel-window { height: 252px; touch-action: pan-y; }
+    .carousel { gap: 8px; will-change: transform; }
+    .car-card { flex: 0 0 160px; height: 230px; padding: 11px; }
+    .car-art { width: 140px; height: 105px; font-size: 68px; }
+    .car-name { font-size: 13px; }
+    .car-rarity { font-size: 11px; }
+    .marker { width: 4px; }
+}
+
+/* ===== CASE EMPIRE: NEON GARAGE VISUAL REFRESH ===== */
+:root{
+  --ce-bg:#05070d;
+  --ce-panel:#0c1220;
+  --ce-panel2:#111a2c;
+  --ce-border:#253552;
+  --ce-text:#f4f8ff;
+  --ce-muted:#8fa4c4;
+  --ce-cyan:#00d8ff;
+  --ce-purple:#8d4dff;
+  --ce-pink:#ff3fb4;
+  --ce-green:#39f58a;
+  --ce-gold:#ffd24a;
+}
+html{
+  background:var(--ce-bg);
+  overscroll-behavior:none;
+}
+body{
+  background:
+    radial-gradient(circle at 15% -10%, rgba(0,216,255,.18), transparent 34%),
+    radial-gradient(circle at 90% 8%, rgba(141,77,255,.20), transparent 35%),
+    linear-gradient(180deg,#070b13 0%,#05070d 58%,#020308 100%) !important;
+  color:var(--ce-text);
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  opacity:.22;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size:34px 34px;
+  mask-image:linear-gradient(to bottom,black,transparent 88%);
+}
+.header{
+  background:rgba(5,8,15,.86) !important;
+  border-bottom:1px solid rgba(0,216,255,.24) !important;
+  box-shadow:0 10px 40px rgba(0,0,0,.38);
+}
+.logo{
+  letter-spacing:.7px;
+  text-shadow:0 0 22px rgba(141,77,255,.48);
+}
+.logo span{
+  color:var(--ce-cyan) !important;
+  text-shadow:0 0 18px rgba(0,216,255,.65);
+}
+.balance{
+  background:linear-gradient(135deg,rgba(16,38,30,.92),rgba(5,19,17,.94)) !important;
+  border:1px solid rgba(57,245,138,.6) !important;
+  color:#75ffad !important;
+  box-shadow:inset 0 0 18px rgba(57,245,138,.07),0 0 24px rgba(57,245,138,.08);
+}
+.section{
+  background:linear-gradient(180deg,rgba(13,20,34,.96),rgba(8,13,23,.96)) !important;
+  border:1px solid rgba(64,89,126,.48) !important;
+  box-shadow:0 18px 55px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.025);
+}
+.section-title{
+  letter-spacing:.4px;
+}
+.stat,.work-upgrade,.case-card{
+  background:linear-gradient(145deg,#111a2b,#0a101c) !important;
+  border:1px solid rgba(57,81,118,.58) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025);
+}
+.work-button,.open-button{
+  background:linear-gradient(135deg,#00a6ff 0%,#6554ff 52%,#a83cff 100%) !important;
+  box-shadow:0 10px 30px rgba(69,86,255,.28), inset 0 1px 0 rgba(255,255,255,.2);
+}
+.work-button:active,.open-button:active,.upgrade-button:active,.buy-case:active{
+  transform:scale(.985) !important;
+}
+.upgrade-button,.buy-case{
+  background:linear-gradient(135deg,#16b85c,#0e8749) !important;
+  box-shadow:0 8px 20px rgba(22,184,92,.16);
+}
+.carousel-window{
+  background:
+    linear-gradient(180deg,rgba(2,5,11,.98),rgba(7,11,18,.98)) !important;
+  border:1px solid rgba(0,216,255,.25) !important;
+  box-shadow:inset 0 0 38px rgba(0,0,0,.72),0 0 26px rgba(0,216,255,.055);
+}
+.marker{
+  background:linear-gradient(to bottom,#fff7a6,var(--ce-gold),#ff9a2f) !important;
+  box-shadow:0 0 12px #ffd84d,0 0 28px rgba(255,216,77,.85) !important;
+}
+.car-card{
+  border:1px solid rgba(255,255,255,.14) !important;
+  box-shadow:0 15px 30px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.045);
+}
+.car-art,.inventory-car,.result-car{
+  font-family:"Arial Black",system-ui,sans-serif;
+  text-shadow:0 10px 22px rgba(0,0,0,.5);
+}
+.car-art{
+  font-size:0 !important;
+  position:relative;
+}
+.car-art::before{
+  content:"";
+  width:92%;
+  height:76%;
+  display:block;
+  border-radius:58% 42% 28% 25% / 50% 48% 26% 26%;
+  background:
+    radial-gradient(circle at 22% 78%,#111 0 10%,#353b46 11% 16%,transparent 17%),
+    radial-gradient(circle at 78% 78%,#111 0 10%,#353b46 11% 16%,transparent 17%),
+    linear-gradient(164deg,transparent 0 28%,rgba(255,255,255,.58) 29% 32%,transparent 33%),
+    linear-gradient(150deg,#dbe7f7 0 9%,#31435c 10% 23%,#111a28 24% 35%,#00c8ff 36% 60%,#5d42ff 61% 82%,#22174b 83%);
+  clip-path:polygon(7% 67%,16% 47%,32% 34%,62% 32%,77% 43%,92% 53%,98% 70%,92% 82%,9% 82%,2% 75%);
+  filter:drop-shadow(0 16px 11px rgba(0,0,0,.55));
+  box-shadow:inset 0 -10px 18px rgba(0,0,0,.32),inset 0 5px 10px rgba(255,255,255,.10);
+}
+.car-art::after{
+  content:"";
+  position:absolute;
+  width:40%;
+  height:5px;
+  left:30%;
+  bottom:26%;
+  border-radius:999px;
+  background:rgba(0,216,255,.9);
+  box-shadow:0 0 16px rgba(0,216,255,.9);
+}
+.r-common{background:linear-gradient(145deg,#242d3a,#0e131c) !important;}
+.r-uncommon{background:linear-gradient(145deg,#0a4d31,#071d17) !important;}
+.r-rare{background:linear-gradient(145deg,#074f7b,#08172d) !important;}
+.r-epic{background:linear-gradient(145deg,#4f1b86,#1b0d31) !important;}
+.r-legendary{background:linear-gradient(145deg,#8a4f08,#2d1805) !important;}
+.r-mythic{background:linear-gradient(145deg,#8b174b,#2a0b1a) !important;}
+.r-ultra{background:linear-gradient(145deg,#9a7d0c,#2d2705) !important;}
+.r-divine{
+  background:linear-gradient(145deg,#eef8ff,#9edcff 45%,#7a68ff) !important;
+  color:#07101b !important;
+}
+@media(max-width:750px){
+  .container{padding:10px !important;}
+  .section{padding:14px !important;border-radius:14px !important;}
+  .header{
+    position:sticky;
+    top:0;
+    flex-direction:row !important;
+    gap:8px;
+    padding:10px 12px !important;
+  }
+  .logo{font-size:18px !important;white-space:nowrap;}
+  .balance{font-size:17px !important;padding:8px 11px !important;}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+  .carousel-window{height:245px !important;}
+  .car-card{
+    flex:0 0 min(66vw,190px) !important;
+    height:218px !important;
+    padding:11px !important;
+  }
+  .car-art{width:155px !important;height:105px !important;}
+  .car-name{font-size:13px !important;}
+  .opening-header{align-items:flex-start !important;gap:8px;}
+  .opening-title{font-size:19px !important;}
+  .opening-case-name{text-align:right;font-size:13px;}
+}
+
+
+/* Real car photos used in the case-opening wheel */
+.car-art{
+  width:100%;
+  height:125px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  border-radius:12px;
+  position:relative;
+  background:
+    radial-gradient(circle at 50% 80%,rgba(0,216,255,.12),transparent 45%),
+    linear-gradient(180deg,#0b1321,#060a11) !important;
+}
+.car-art::before,
+.car-art::after{
+  display:none !important;
+}
+.car-photo{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center;
+  border-radius:11px;
+  filter:saturate(1.08) contrast(1.05);
+  transform:scale(1.01);
+}
+.car-photo.loading{
+  opacity:.18;
+}
+.car-photo-fallback{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:58px;
+  background:
+    radial-gradient(circle at 50% 75%,rgba(0,216,255,.18),transparent 42%),
+    linear-gradient(145deg,#121d31,#070b12);
+}
+@media(max-width:750px){
+  .car-art{
+    width:100% !important;
+    height:112px !important;
+  }
+}
+
+
+/* Self-contained car art: no external photo/network request during spins */
+.car-art{
+  width:100% !important;
+  height:118px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  position:relative !important;
+  border-radius:12px !important;
+  font-size:0 !important;
+  background:
+    radial-gradient(circle at 50% 80%,rgba(0,216,255,.14),transparent 46%),
+    linear-gradient(180deg,#0c1524,#05080e) !important;
+}
+.car-art::before{
+  content:"";
+  width:92%;
+  height:78%;
+  display:block !important;
+  background:
+    radial-gradient(circle at 22% 78%,#0a0b0e 0 10%,#48515e 11% 16%,transparent 17%),
+    radial-gradient(circle at 78% 78%,#0a0b0e 0 10%,#48515e 11% 16%,transparent 17%),
+    linear-gradient(164deg,transparent 0 28%,rgba(255,255,255,.58) 29% 32%,transparent 33%),
+    linear-gradient(150deg,#e2edf9 0 9%,#30435d 10% 23%,#101827 24% 35%,#00c8ff 36% 60%,#6550ff 61% 82%,#24194b 83%);
+  clip-path:polygon(7% 67%,16% 47%,32% 34%,62% 32%,77% 43%,92% 53%,98% 70%,92% 82%,9% 82%,2% 75%);
+  filter:drop-shadow(0 16px 10px rgba(0,0,0,.58));
+}
+.car-art::after{
+  content:"";
+  position:absolute;
+  width:42%;
+  height:5px;
+  left:29%;
+  bottom:23%;
+  display:block !important;
+  border-radius:999px;
+  background:rgba(0,216,255,.92);
+  box-shadow:0 0 17px rgba(0,216,255,.92);
+}
+@media(max-width:750px){
+  .car-art{height:106px !important;}
+}
+
+
+/* ===== REAL CAR PHOTOS — NO PHOTO PERMISSION API ===== */
+.car-art{
+  width:100% !important;
+  height:125px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+  position:relative !important;
+  border-radius:12px !important;
+  background:linear-gradient(180deg,#0a111d,#05080e) !important;
+}
+.car-art::before,
+.car-art::after{
+  display:none !important;
+  content:none !important;
+}
+.real-car-photo{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center;
+  border-radius:11px;
+  background:#0a0f18;
+  filter:saturate(1.06) contrast(1.04);
+  -webkit-user-drag:none;
+  user-select:none;
+  pointer-events:none;
+}
+@media(max-width:750px){
+  .car-art{
+    height:112px !important;
+  }
+}
+
+
+/* ===== WIN POPUP REAL CAR PHOTO ===== */
+.result-photo-wrap{
+  width:min(92%,520px);
+  height:220px;
+  margin:14px auto 16px;
+  border-radius:16px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#0b1220,#05080e);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 18px 45px rgba(0,0,0,.35);
+}
+.result-photo{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  user-select:none;
+  -webkit-user-drag:none;
+  pointer-events:none;
+}
+@media(max-width:750px){
+  .result-photo-wrap{
+    height:185px;
+    width:100%;
+  }
+}
+
+
+/* ===== WIN SCREEN CLEANUP + MOBILE POLISH ===== */
+
+/* Remove the fake/drawn car from the result popup */
+#resultModal .result-car,
+#resultModal .car-art,
+.result-popup .result-car,
+.result-popup .car-art,
+.result-content .result-car,
+.result-content .car-art{
+  display:none !important;
+}
+
+/* Smaller real car photo on result screen */
+.result-photo-wrap{
+  width:min(78%, 360px) !important;
+  height:150px !important;
+  margin:10px auto 12px !important;
+  border-radius:14px !important;
+}
+
+.result-photo{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  border-radius:13px !important;
+}
+
+/* Better mobile result popup */
+@media(max-width:750px){
+  body{
+    overflow-x:hidden !important;
+  }
+
+  #resultModal,
+  .result-modal{
+    padding:12px !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  #resultModal .modal-content,
+  #resultModal .result-content,
+  .result-popup,
+  .result-content{
+    width:min(94vw,420px) !important;
+    max-height:88vh !important;
+    overflow-y:auto !important;
+    -webkit-overflow-scrolling:touch !important;
+    padding:16px !important;
+    border-radius:16px !important;
+    box-sizing:border-box !important;
+  }
+
+  .result-photo-wrap{
+    width:min(82vw,300px) !important;
+    height:128px !important;
+    margin:8px auto 10px !important;
+  }
+
+  .result-photo{
+    object-fit:cover !important;
+  }
+
+  .result-name,
+  .result-title,
+  #resultTitle{
+    font-size:20px !important;
+    line-height:1.15 !important;
+    text-align:center !important;
+    word-break:break-word !important;
+  }
+
+  .result-value,
+  .result-rarity{
+    font-size:14px !important;
+    text-align:center !important;
+  }
+
+  .close-result,
+  .result-button,
+  #resultModal button{
+    min-height:48px !important;
+    font-size:16px !important;
+    border-radius:12px !important;
+    touch-action:manipulation !important;
+  }
+
+  .carousel-window{
+    width:100% !important;
+    overflow:hidden !important;
+  }
+
+  .carousel{
+    will-change:transform !important;
+  }
+
+  button,
+  .work-button,
+  .upgrade-button,
+  .buy-case,
+  .open-button{
+    touch-action:manipulation !important;
+    -webkit-tap-highlight-color:transparent !important;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="logo">
+👑 CASE <span>EMPIRE</span>
+</div>
+
+<div class="balance">
+$<span id="money">0</span>
+</div>
+
+</header>
+
+<div class="container">
+
+<section class="section">
+
+<h2 class="section-title">
+📊 STATS
+</h2>
+
+<div class="stats">
+
+<div class="stat">
+<div class="stat-value" id="totalEarned">$0</div>
+<div class="stat-label">TOTAL EARNED</div>
+</div>
+
+<div class="stat">
+<div class="stat-value" id="casesOpened">0</div>
+<div class="stat-label">CASES OPENED</div>
+</div>
+
+<div class="stat">
+<div class="stat-value" id="income">$1</div>
+<div class="stat-label">JOB PAYOUT</div>
+</div>
+
+<div class="stat">
+<div class="stat-value" id="idleIncome">$0/sec</div>
+<div class="stat-label">PASSIVE INCOME</div>
+</div>
+
+<div class="stat">
+<div class="stat-value stat-luck" id="luck">1.00x</div>
+<div class="stat-label">LUCK</div>
+</div>
+
+</div>
+</section>
+
+
+<section class="section">
+
+<h2 class="section-title">
+💼 WORK
+</h2>
+
+<div class="work-layout">
+
+<div>
+
+<button class="work-button" onclick="work()">
+
+💼 DO QUICK JOB
+
+<br>
+
+<span style="font-size:15px">
++$<span id="workAmount">1</span>
+</span>
+
+</button>
+
+<div class="work-info">
+Complete quick jobs to earn money.<br>
+Passive income runs automatically while the game is open.
+</div>
+
+</div>
+
+<div class="work-upgrade">
+
+<h3>
+⬆️ BETTER PAY
+</h3>
+
+<p>
+Level:
+<b id="incomeLevel">0</b>
+</p>
+
+<p>
+Current:
+<b>$<span id="currentPay">1</span></b> / click
+</p>
+
+<p>
+Upgrade Tier:
+<b id="incomeTier">Starter</b>
+</p>
+
+<p>
+Next Upgrade:
+<b style="color:#4dff88">$<span id="nextPay">2</span> / click</b>
+</p>
+
+<p class="small">Upgrade cost +20% each level • payout +15% each level.</p>
+
+<button class="upgrade-button" onclick="upgradeIncome()">
+Upgrade<br>
+$<span id="incomeCost">25</span>
+</button>
+
+</div>
+
+</div>
+</section>
+
+
+<section class="section">
+
+<h2 class="section-title">
+💰 PASSIVE INCOME
+</h2>
+
+<div class="work-upgrade">
+
+<p>
+Idle Level:
+<b id="idleLevel">0</b>
+</p>
+
+<p>
+Current:
+<b style="color:#4dff88">$<span id="idleRate">0</span> / sec</b>
+</p>
+
+<p>
+Next Upgrade:
+<b style="color:#4dff88">$<span id="nextIdleRate">1</span> / sec</b>
+</p>
+
+<p class="small">
+First upgrade costs $1,000. Every passive-income upgrade costs 20% more than the previous one. Passive income increases by 15% per level.
+</p>
+
+<button class="upgrade-button" onclick="upgradeIdleIncome()">
+💰 UPGRADE PASSIVE INCOME —<br>
+$<span id="idleCost">1,000</span>
+</button>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<h2 class="section-title">
+🍀 LUCK UPGRADES
+</h2>
+
+<div class="work-upgrade">
+
+<p>
+Luck Level:
+<b id="luckLevel">0</b>
+</p>
+
+<p>
+Current Luck:
+<b style="color:#ffd84d" id="luckDisplay">1.00x</b>
+</p>
+
+<p class="small">
+
+Luck makes higher rarities more likely.
+
+Every case still gets a completely new
+random roll.
+
+There is NO guaranteed rarity after a
+certain number of cases.
+
+<br><br>Luck upgrade cost increases by 20% each level.
+
+</p>
+
+<button class="upgrade-button" onclick="upgradeLuck()">
+
+🍀 UPGRADE LUCK —
+$<span id="luckCost">100</span>
+
+</button>
+
+</div>
+
+</section>
+
+
+<section class="section opening">
+
+<div class="opening-header">
+
+<div>
+
+<div class="opening-title">
+📦 CASE OPENING
+</div>
+
+<div class="small">
+Choose a case and open it.
+</div>
+
+</div>
+
+<div class="opening-case-name"
+id="selectedCaseName">
+Starter Case
+</div>
+
+</div>
+
+<div class="carousel-window"
+id="carouselWindow">
+
+<div class="marker"></div>
+
+<div class="carousel"
+id="carousel">
+</div>
+
+</div>
+
+<button class="open-button"
+id="openButton"
+onclick="openSelectedCase()">
+
+🔓 OPEN STARTER CASE — $500
+
+</button>
+
+</section>
+
+
+<section class="section">
+
+<h2 class="section-title">
+🛒 CASE SHOP
+</h2>
+
+<div class="case-grid"
+id="caseGrid">
+</div>
+
+</section>
+
+
+<section class="section">
+
+<h2 class="section-title">
+🎒 INVENTORY
+</h2>
+
+<button class="sell-all"
+onclick="sellAll()">
+
+💰 SELL ALL ITEMS
+
+</button>
+
+<div class="inventory"
+id="inventory">
+</div>
+
+</section>
+
+
+<section class="section"
+style="text-align:center">
+
+<button class="reset"
+onclick="resetGame()">
+
+RESET GAME
+
+</button>
+
+</section>
+
+</div>
+
+
+<div class="modal"
+id="resultModal">
+
+<div class="result"
+id="resultBox">
+
+<h2>
+🎉 YOU WON!
+</h2>
+
+<div class="result-photo-wrap"><img id="resultPhoto" class="result-photo" loading="eager" decoding="async" alt=""></div>
+<div class="result-car"
+id="resultCar">
+🚗
+</div>
+
+<div class="result-rarity"
+id="resultRarity">
+RARE
+</div>
+
+<div class="result-name"
+id="resultName">
+Car
+</div>
+
+<div class="result-value"
+id="resultValue">
+$1,000
+</div>
+
+<button class="continue"
+onclick="closeResult()">
+
+CONTINUE
+
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   RARITIES
+========================================================= */
+
+const rarities = {
+
+common: {
+name:"Common",
+emoji:"⚪",
+class:"r-common"
+},
+
+uncommon: {
+name:"Uncommon",
+emoji:"🟢",
+class:"r-uncommon"
+},
+
+rare: {
+name:"Rare",
+emoji:"🔵",
+class:"r-rare"
+},
+
+epic: {
+name:"Epic",
+emoji:"🟣",
+class:"r-epic"
+},
+
+legendary: {
+name:"Legendary",
+emoji:"🟠",
+class:"r-legendary"
+},
+
+mythic: {
+name:"Mythic",
+emoji:"🔴",
+class:"r-mythic"
+},
+
+ultra: {
+name:"Ultra Rare",
+emoji:"🌟",
+class:"r-ultra"
+},
+
+divine: {
+name:"Divine",
+emoji:"👑",
+class:"r-divine"
+}
+
+};
+
+const rarityOrder = [
+"common",
+"uncommon",
+"rare",
+"epic",
+"legendary",
+"mythic",
+"ultra",
+"divine"
+];
+
+
+/* =========================================================
+   CARS
+========================================================= */
+
+const cars = {
+
+common:[
+["Honda Civic","🚗"],
+["Toyota Corolla","🚙"],
+["Ford Focus","🚘"],
+["Chevy Malibu","🚗"],
+["Nissan Sentra","🚙"],
+["Hyundai Elantra","🚘"],
+["Kia Forte","🚗"],
+["Volkswagen Jetta","🚙"]
+],
+
+uncommon:[
+["Honda Accord Sport","🚗"],
+["Toyota Camry TRD","🚘"],
+["Ford Mustang EcoBoost","🏎️"],
+["Subaru WRX","🚗"],
+["Volkswagen GTI","🚘"],
+["Mazda MX-5","🏎️"]
+],
+
+rare:[
+["BMW M2","🏎️"],
+["Toyota GR Corolla","🚗"],
+["Ford Focus RS","🚘"],
+["Honda Civic Type R","🏎️"],
+["Nissan 370Z","🚗"],
+["Subaru WRX STI","🚘"]
+],
+
+epic:[
+["Nissan GT-R","🏎️"],
+["BMW M4 Competition","🚘"],
+["Porsche 911 Carrera","🏎️"],
+["Toyota Supra","🚗"],
+["Audi RS3","🚘"],
+["Mercedes-AMG A45","🏎️"]
+],
+
+legendary:[
+["Lamborghini Huracan","🏎️"],
+["Ferrari 488","🚗"],
+["McLaren 720S","🏎️"],
+["Porsche 911 Turbo S","🚘"],
+["Nissan GT-R Nismo","🏎️"],
+["Corvette Z06","🚗"]
+],
+
+mythic:[
+["Lamborghini Aventador","🏎️"],
+["Ferrari SF90","🚗"],
+["McLaren 765LT","🏎️"],
+["Porsche 918 Spyder","🚘"],
+["Aston Martin Valkyrie","🏎️"],
+["Ford GT","🚗"]
+],
+
+ultra:[
+["Bugatti Chiron","🏎️"],
+["Koenigsegg Jesko","🚘"],
+["Pagani Huayra","🏎️"],
+["Rimac Nevera","🚗"],
+["Bugatti Divo","🏎️"]
+],
+
+divine:[
+["Bugatti La Voiture Noire","🏎️"],
+["Koenigsegg Gemera","🚘"],
+["Pagani Zonda HP Barchetta","🏎️"],
+["McLaren F1 LM","🚗"],
+["Ferrari FXX-K Evo","🏎️"]
+]
+
+};
+
+
+/* =========================================================
+   CASES
+========================================================= */
+
+const cases = [
+
+{
+name:"Starter Case",
+price:500,
+
+odds:{
+common:5,
+uncommon:15,
+rare:50,
+epic:100,
+legendary:150,
+mythic:500,
+ultra:10000,
+divine:1000000
+},
+
+multiplier:1
+},
+
+{
+name:"Premium Case",
+price:5000,
+
+odds:{
+common:5,
+uncommon:12,
+rare:40,
+epic:80,
+legendary:120,
+mythic:350,
+ultra:5000,
+divine:500000
+},
+
+multiplier:10
+},
+
+{
+name:"Elite Case",
+price:50000,
+
+odds:{
+common:5,
+uncommon:10,
+rare:30,
+epic:65,
+legendary:90,
+mythic:250,
+ultra:2500,
+divine:250000
+},
+
+multiplier:100
+},
+
+{
+name:"Legendary Case",
+price:500000,
+
+odds:{
+common:5,
+uncommon:8,
+rare:25,
+epic:50,
+legendary:60,
+mythic:175,
+ultra:1000,
+divine:100000
+},
+
+multiplier:1000
+},
+
+{
+name:"Mythic Case",
+price:5000000,
+
+odds:{
+common:5,
+uncommon:7,
+rare:20,
+epic:35,
+legendary:45,
+mythic:100,
+ultra:500,
+divine:25000
+},
+
+multiplier:10000
+},
+
+{
+name:"Divine Case",
+price:50000000,
+
+odds:{
+common:5,
+uncommon:6,
+rare:15,
+epic:25,
+legendary:35,
+mythic:75,
+ultra:250,
+divine:10000
+},
+
+multiplier:100000
+}
+
+];
+
+
+/* =========================================================
+   GAME DATA
+========================================================= */
+
+let game = {
+
+money:0,
+
+totalEarned:0,
+
+casesOpened:0,
+
+incomeLevel:0,
+
+idleLevel:0,
+
+luckLevel:0,
+
+inventory:{}
+
+};
+
+let selectedCase = 0;
+
+let opening = false;
+
+
+/* =========================================================
+   SAVE / LOAD
+========================================================= */
+
+function saveGame() {
+
+localStorage.setItem(
+"caseEmpireSaveFreshV2",
+JSON.stringify(game)
+);
+
+}
+
+function loadGame() {
+
+const saved =
+localStorage.getItem(
+"caseEmpireSaveFreshV2"
+);
+
+if(saved) {
+
+try {
+
+game = {
+...game,
+...JSON.parse(saved)
+};
+
+} catch(e) {
+
+console.log("Save error");
+
+}
+
+}
+
+renderCases();
+
+selectCase(0);
+
+updateUI();
+
+}
+
+
+/* =========================================================
+   MONEY
+========================================================= */
+
+function money(value) {
+
+return Math.floor(value)
+.toLocaleString();
+
+}
+
+
+/* =========================================================
+   WORK
+========================================================= */
+
+function getIncome() {
+
+/* Whole-number click payout: normal rounding, no decimals. */
+return Math.max(1, Math.round(
+Math.pow(1.15, game.incomeLevel)
+));
+
+}
+
+function getIncomeCost() {
+
+return Math.max(25, Math.round(
+25 * Math.pow(1.20, game.incomeLevel)
+));
+
+}
+
+function getIncomeTier() {
+
+/* Lots of visible clicker ranks. Upgrades themselves remain unlimited. */
+const tiers = [
+"Starter", "Rookie", "Bronze", "Silver", "Gold",
+"Platinum", "Diamond", "Emerald", "Sapphire", "Ruby",
+"Elite", "Expert", "Master", "Grandmaster", "Legend",
+"Champion", "Boss", "Tycoon", "Mogul", "Executive",
+"Investor", "Entrepreneur", "CEO", "Magnate", "Empire Builder",
+"Kingpin", "Millionaire", "Multi-Millionaire", "Billionaire", "Industrialist",
+"Titan", "Mega Titan", "Hyper Titan", "Ultimate", "Supreme",
+"Mythic Worker", "Legendary Worker", "Divine Worker", "Case Emperor", "MAX POWER"
+];
+
+return tiers[Math.min(game.incomeLevel, tiers.length - 1)];
+
+}
+
+function getNextIncome() {
+    const currentLevel = game.incomeLevel;
+    game.incomeLevel = currentLevel + 1;
+    const next = getIncome();
+    game.incomeLevel = currentLevel;
+    return next;
+}
+
+function work() {
+
+const amount =
+getIncome();
+
+game.money += amount;
+
+game.totalEarned += amount;
+
+saveGame();
+
+updateUI();
+
+}
+
+function upgradeIncome() {
+
+const cost =
+getIncomeCost();
+
+if(game.money < cost) {
+
+alert(
+"You need $" +
+money(cost) +
+"."
+);
+
+return;
+
+}
+
+game.money -= cost;
+
+game.incomeLevel++;
+
+saveGame();
+
+updateUI();
+
+}
+
+
+/* =========================================================
+   PASSIVE / IDLE INCOME
+========================================================= */
+
+function getIdleRateForLevel(level) {
+
+/* Whole-number passive payout: normal rounding, no decimals. */
+if(level <= 0) return 0;
+return Math.max(1, Math.round(
+Math.pow(1.15, level - 1)
+));
+
+}
+
+function getIdleRate() {
+return getIdleRateForLevel(game.idleLevel);
+}
+
+function getNextIdleRate() {
+return getIdleRateForLevel(game.idleLevel + 1);
+}
+
+function getIdleCost() {
+
+return Math.round(
+1000 * Math.pow(1.20, game.idleLevel)
+);
+
+}
+
+function upgradeIdleIncome() {
+
+const cost = getIdleCost();
+
+if(game.money < cost) {
+alert("You need $" + money(cost) + ".");
+return;
+}
+
+game.money -= cost;
+game.idleLevel++;
+
+saveGame();
+updateUI();
+
+}
+
+function idleMoney(value) {
+if(value >= 1000) return money(value);
+if(value >= 100) return value.toFixed(0);
+if(value >= 10) return value.toFixed(1).replace(/\.0$/,"");
+return value.toFixed(2).replace(/0+$/,"").replace(/\.$/,"");
+}
+
+let lastIdleTick = performance.now();
+
+setInterval(() => {
+
+if(opening) {
+    /* Case animation does not stop passive income. */
+}
+
+const now = performance.now();
+const elapsedSeconds = Math.max(0, Math.min(5, (now - lastIdleTick) / 1000));
+lastIdleTick = now;
+
+const rate = getIdleRate();
+
+if(rate > 0) {
+    const earned = rate * elapsedSeconds;
+    game.money += earned;
+    game.totalEarned += earned;
+    updateUI();
+}
+
+}, 250);
+
+/* Save passive progress regularly without creating offline earnings. */
+setInterval(() => {
+if(game.idleLevel > 0) saveGame();
+}, 5000);
+
+
+/* =========================================================
+   LUCK
+========================================================= */
+
+/*
+Every luck level increases the
+effectiveness of the higher rarity
+weights.
+
+Luck Level 0 = 1.00x
+
+Level 1 = 1.12x
+
+Level 2 = 1.24x
+
+etc.
+*/
+
+function getLuck() {
+
+return 1 +
+(game.luckLevel * 0.12);
+
+}
+
+function getLuckCost() {
+
+return Math.floor(
+100 * Math.pow(1.20, game.luckLevel)
+);
+
+}
+
+function upgradeLuck() {
+
+const cost =
+getLuckCost();
+
+if(game.money < cost) {
+
+alert(
+"You need $" +
+money(cost) +
+"."
+);
+
+return;
+
+}
+
+game.money -= cost;
+
+game.luckLevel++;
+
+saveGame();
+
+updateUI();
+
+}
+
+
+/* =========================================================
+   NEW ODDS SYSTEM
+========================================================= */
+
+/*
+
+IMPORTANT:
+
+This is the new random system.
+
+Every case opening creates a
+brand-new random number.
+
+There is NO counter.
+
+There is NO pity.
+
+There is NO "guaranteed after 15 cases."
+
+Luck modifies the higher-rarity
+weights every time a case is opened.
+
+The base rarity weights come from
+the supplied 1-in-X numbers.
+
+Higher rarities receive a stronger
+benefit from Luck.
+
+*/
+
+function determineRarity(caseData) {
+
+const luck =
+getLuck();
+
+
+/*
+Convert 1-in-X odds into weights.
+
+Smaller denominator =
+larger chance.
+
+The weight is:
+
+1 / denominator
+
+Example:
+
+Common:
+1/5
+
+Uncommon:
+1/15
+
+Rare:
+1/50
+
+etc.
+*/
+
+const base = {
+
+common:
+1 / caseData.odds.common,
+
+uncommon:
+1 / caseData.odds.uncommon,
+
+rare:
+1 / caseData.odds.rare,
+
+epic:
+1 / caseData.odds.epic,
+
+legendary:
+1 / caseData.odds.legendary,
+
+mythic:
+1 / caseData.odds.mythic,
+
+ultra:
+1 / caseData.odds.ultra,
+
+divine:
+1 / caseData.odds.divine
+
+};
+
+
+/*
+Luck multiplier by rarity.
+
+Common does not benefit.
+
+Uncommon gets a small boost.
+
+The higher the rarity,
+the stronger the Luck effect.
+*/
+
+const luckBoost = {
+
+common:1,
+
+uncommon:
+1 + ((luck - 1) * 0.40),
+
+rare:
+1 + ((luck - 1) * 0.75),
+
+epic:
+1 + ((luck - 1) * 1.00),
+
+legendary:
+1 + ((luck - 1) * 1.25),
+
+mythic:
+1 + ((luck - 1) * 1.50),
+
+ultra:
+1 + ((luck - 1) * 1.80),
+
+divine:
+1 + ((luck - 1) * 2.20)
+
+};
+
+
+/*
+Calculate final weights.
+*/
+
+let weights = {};
+
+let totalWeight = 0;
+
+rarityOrder.forEach(
+(rarity) => {
+
+weights[rarity] =
+base[rarity] *
+luckBoost[rarity];
+
+totalWeight +=
+weights[rarity];
+
+});
+
+
+
+/*
+Normalize the weights.
+
+This means every single opening
+has exactly ONE result.
+
+There is never a second roll.
+
+There is never a pity counter.
+
+*/
+
+let random =
+Math.random() *
+totalWeight;
+
+
+for(
+const rarity of rarityOrder
+) {
+
+random -=
+weights[rarity];
+
+if(random <= 0) {
+
+return rarity;
+
+}
+
+}
+
+
+/*
+Safety fallback.
+*/
+
+return "common";
+
+}
+
+
+
+
+/* =========================================================
+   REAL CAR PHOTO URLS
+   Uses a normal image URL, NOT a photo picker or permission API.
+   The model name is encoded into the image query so each card
+   requests a real photo of that specific vehicle.
+========================================================= */
+
+function carPhotoUrl(carName) {
+    const q = encodeURIComponent(carName + " car");
+    return "https://tse1.mm.bing.net/th?q=" + q +
+           "&w=640&h=360&c=7&rs=1&p=0";
+}
+
+function carPhotoFallback(img, emoji) {
+    if(!img || img.dataset.fallbackDone === "1") return;
+    img.dataset.fallbackDone = "1";
+
+    const fallback = document.createElement("div");
+    fallback.style.width = "100%";
+    fallback.style.height = "100%";
+    fallback.style.display = "flex";
+    fallback.style.alignItems = "center";
+    fallback.style.justifyContent = "center";
+    fallback.style.fontSize = "58px";
+    fallback.style.background =
+      "linear-gradient(145deg,#111a2a,#060a11)";
+    fallback.textContent = emoji || "🏎️";
+
+    img.replaceWith(fallback);
+}
+
+
+/* =========================================================
+   GET CAR
+========================================================= */
+
+function getCar(
+rarity,
+caseData
+) {
+
+const list =
+cars[rarity];
+
+const randomCar =
+list[
+Math.floor(
+Math.random() *
+list.length
+)
+];
+
+
+let multiplier;
+
+
+switch(rarity) {
+
+case "common":
+
+multiplier =
+0.08 +
+Math.random() * 0.10;
+
+break;
+
+case "uncommon":
+
+multiplier =
+0.30 +
+Math.random() * 0.20;
+
+break;
+
+case "rare":
+
+multiplier =
+0.80 +
+Math.random() * 0.40;
+
+break;
+
+case "epic":
+
+multiplier =
+1.50 +
+Math.random() * 0.80;
+
+break;
+
+case "legendary":
+
+multiplier =
+3 +
+Math.random() * 3;
+
+break;
+
+case "mythic":
+
+multiplier =
+8 +
+Math.random() * 10;
+
+break;
+
+case "ultra":
+
+multiplier =
+30 +
+Math.random() * 50;
+
+break;
+
+case "divine":
+
+multiplier =
+100 +
+Math.random() * 200;
+
+break;
+
+}
+
+
+return {
+
+name:
+randomCar[0],
+
+emoji:
+randomCar[1],
+
+rarity:
+rarity,
+
+value:
+Math.floor(
+caseData.price *
+multiplier
+)
+
+};
+
+}
+
+
+/* =========================================================
+   SELECT CASE
+========================================================= */
+
+function selectCase(index) {
+
+selectedCase =
+index;
+
+const selected =
+cases[index];
+
+document.getElementById(
+"selectedCaseName"
+).textContent =
+selected.name;
+
+document.getElementById(
+"openButton"
+).textContent =
+
+"🔓 OPEN " +
+selected.name.toUpperCase() +
+" — $" +
+money(selected.price);
+
+}
+
+
+/* =========================================================
+   CASE SHOP
+========================================================= */
+
+function renderCases() {
+
+const grid =
+document.getElementById(
+"caseGrid"
+);
+
+grid.innerHTML = "";
+
+
+cases.forEach(
+(c,index) => {
+
+const div =
+document.createElement(
+"div"
+);
+
+div.className =
+"case-card";
+
+div.innerHTML = `
+
+<h3>
+${c.name}
+</h3>
+
+<div class="case-icon">
+📦
+</div>
+
+<div class="case-price">
+$${money(c.price)}
+</div>
+
+<div class="case-odds">
+
+⚪ Common — 1/${c.odds.common.toLocaleString()}<br>
+
+🟢 Uncommon — 1/${c.odds.uncommon.toLocaleString()}<br>
+
+🔵 Rare — 1/${c.odds.rare.toLocaleString()}<br>
+
+🟣 Epic — 1/${c.odds.epic.toLocaleString()}<br>
+
+🟠 Legendary — 1/${c.odds.legendary.toLocaleString()}<br>
+
+🔴 Mythic — 1/${c.odds.mythic.toLocaleString()}<br>
+
+🌟 Ultra Rare — 1/${c.odds.ultra.toLocaleString()}<br>
+
+👑 Divine — 1/${c.odds.divine.toLocaleString()}
+
+</div>
+
+<button
+class="buy-case"
+onclick="selectCase(${index})">
+
+SELECT CASE
+
+</button>
+
+`;
+
+grid.appendChild(div);
+
+});
+
+}
+
+
+/* =========================================================
+   OPEN CASE
+========================================================= */
+
+function openSelectedCase() {
+
+if(opening)
+return;
+
+
+const caseData =
+cases[selectedCase];
+
+
+if(game.money <
+caseData.price) {
+
+alert(
+"You need $" +
+money(caseData.price) +
+" to open this case."
+);
+
+return;
+
+}
+
+
+/*
+Pay for case.
+*/
+
+game.money -=
+caseData.price;
+
+opening = true;
+
+document.getElementById(
+"openButton"
+).disabled = true;
+
+
+/*
+ONE RANDOM ROLL.
+
+This is the only place the
+rarity is decided.
+*/
+
+const rarity =
+determineRarity(caseData);
+
+
+/*
+Pick the actual car.
+*/
+
+const winningCar =
+getCar(
+rarity,
+caseData
+);
+
+
+/*
+Run the visual carousel.
+*/
+
+playCarousel(
+winningCar,
+caseData
+);
+
+}
+
+
+/* =========================================================
+   CAROUSEL
+========================================================= */
+
+function playCarousel(
+winningCar,
+caseData
+) {
+
+const carousel =
+document.getElementById(
+"carousel"
+);
+
+carousel.innerHTML = "";
+
+
+const total =
+70;
+
+const winningIndex =
+58;
+
+
+let list = [];
+
+
+for(
+let i=0;
+i<total;
+i++
+) {
+
+if(i === winningIndex) {
+
+list.push(
+winningCar
+);
+
+}
+
+else {
+
+const randomRarity =
+rarityOrder[
+Math.floor(
+Math.random() *
+rarityOrder.length
+)
+];
+
+const randomList =
+cars[randomRarity];
+
+const randomCar =
+randomList[
+Math.floor(
+Math.random() *
+randomList.length
+)
+];
+
+list.push({
+
+name:
+randomCar[0],
+
+emoji:
+randomCar[1],
+
+rarity:
+randomRarity,
+
+value:0
+
+});
+
+}
+
+}
+
+
+list.forEach(
+(car,index) => {
+
+const card =
+document.createElement(
+"div"
+);
+
+card.className =
+"car-card " +
+rarities[
+car.rarity
+].class;
+
+card.innerHTML = `
+
+<div class="car-art">
+<img
+  class="real-car-photo"
+  src="${carPhotoUrl(car.name)}"
+  alt="${car.name}"
+  referrerpolicy="no-referrer"
+  draggable="false"
+  onerror="carPhotoFallback(this, '${car.emoji}')"
+>
+</div>
+
+<div class="car-name">
+${car.name}
+</div>
+
+<div class="car-rarity">
+${rarities[
+car.rarity
+].emoji}
+${rarities[
+car.rarity
+].name}
+</div>
+
+<div class="car-price">
+
+${
+index === winningIndex
+? "$" + money(winningCar.value)
+: ""
+}
+
+</div>
+
+`;
+
+carousel.appendChild(card);
+});
+
+
+void carousel.offsetWidth;
+
+
+/* Center the exact winning DOM card under the marker.
+   offsetLeft already includes the phone card width and flex gap, so this
+   stays accurate on iPhone/Android screens and desktop at every size. */
+const winningCardEl = carousel.children[winningIndex];
+const carouselWindow = document.getElementById("carouselWindow");
+const windowWidth = carouselWindow.clientWidth;
+const winningCenter = winningCardEl.offsetLeft + (winningCardEl.offsetWidth / 2);
+const targetX = winningCenter - (windowWidth / 2);
+
+carousel.style.transition =
+"none";
+
+carousel.style.transform =
+"translateX(0px)";
+
+void carousel.offsetWidth;
+
+
+carousel.style.transition =
+
+"transform " +
+(window.innerWidth <= 750 ? "5.2s " : "6.5s ") +
+"cubic-bezier(.08,.72,.12,1)";
+
+carousel.style.transform =
+
+"translateX(-" +
+targetX +
+"px)";
+
+
+setTimeout(
+() => {
+
+finishOpening(
+winningCar
+);
+
+},
+window.innerWidth <= 750 ? 5500 : 6800
+);
+
+}
+
+
+/* =========================================================
+   FINISH CASE
+========================================================= */
+
+
+
+function cleanResultPopupVisuals() {
+    const selectors = [
+        "#resultModal .result-car",
+        "#resultModal .car-art",
+        ".result-popup .result-car",
+        ".result-popup .car-art",
+        ".result-content .result-car",
+        ".result-content .car-art"
+    ];
+
+    selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+            el.style.display = "none";
+            el.setAttribute("aria-hidden", "true");
+        });
+    });
+}
+
+
+function setResultCarPhoto(car) {
+    cleanResultPopupVisuals();
+    const img = document.getElementById("resultPhoto");
+    if(!img || !car) return;
+
+    img.alt = car.name || "Won car";
+
+    if(typeof carPhotoUrl === "function") {
+        img.src = carPhotoUrl(car.name);
+        img.onerror = function() {
+            this.onerror = null;
+            this.style.objectFit = "contain";
+            this.style.padding = "22px";
+            this.style.background = "linear-gradient(145deg,#111a2a,#060a11)";
+            this.src =
+                "data:image/svg+xml;charset=UTF-8," +
+                encodeURIComponent(
+                    '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360">' +
+                    '<rect width="100%" height="100%" fill="#0b1220"/>' +
+                    '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="110">🏎️</text>' +
+                    '</svg>'
+                );
+        };
+    }
+}
+
+
+function finishOpening(
+car
+) {
+
+opening = false;
+
+game.casesOpened++;
+
+
+const key =
+car.name +
+"|" +
+car.rarity;
+
+
+if(!game.inventory[key]) {
+
+game.inventory[key] = {
+
+name:
+car.name,
+
+emoji:
+car.emoji,
+
+rarity:
+car.rarity,
+
+count:0,
+
+totalValue:0
+
+};
+
+}
+
+
+game.inventory[key].count++;
+
+game.inventory[key].totalValue +=
+car.value;
+
+
+saveGame();
+
+updateUI();
+
+showResult(car);
+
+document.getElementById(
+"openButton"
+).disabled =
+false;
+
+}
+
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function showResult(car) {
+setResultCarPhoto(car);
+
+const modal =
+document.getElementById(
+"resultModal"
+);
+
+const box =
+document.getElementById(
+"resultBox"
+);
+
+box.className =
+"result " +
+rarities[
+car.rarity
+].class;
+
+
+document.getElementById(
+"resultCar"
+).textContent =
+car.emoji;
+
+
+document.getElementById(
+"resultRarity"
+).textContent =
+
+rarities[
+car.rarity
+].emoji +
+" " +
+rarities[
+car.rarity
+].name +
+" " +
+rarities[
+car.rarity
+].emoji;
+
+
+document.getElementById(
+"resultName"
+).textContent =
+car.name;
+
+
+document.getElementById(
+"resultValue"
+).textContent =
+
+"Sell Value: $" +
+money(car.value);
+
+
+modal.classList.add("show");
+
+}
+
+
+/* =========================================================
+   CLOSE RESULT
+========================================================= */
+
+function closeResult() {
+
+document.getElementById(
+"resultModal"
+).classList.remove("show");
+
+}
+
+
+/* =========================================================
+   INVENTORY
+========================================================= */
+
+function updateInventory() {
+
+const inventory =
+document.getElementById(
+"inventory"
+);
+
+inventory.innerHTML = "";
+
+
+const items =
+Object.entries(
+game.inventory
+);
+
+
+if(items.length === 0) {
+
+inventory.innerHTML =
+"<div class='small'>Your inventory is empty. Open a case to win cars!</div>";
+
+return;
+
+}
+
+
+items.sort(
+(a,b) => {
+
+return (
+
+rarityOrder.indexOf(
+b[1].rarity
+)
+
+-
+
+rarityOrder.indexOf(
+a[1].rarity
+)
+
+);
+
+});
+
+
+items.forEach(
+([key,item]) => {
+
+const div =
+document.createElement(
+"div"
+);
+
+div.className =
+"inventory-card " +
+rarities[
+item.rarity
+].class;
+
+
+const averageValue =
+Math.floor(
+item.totalValue /
+item.count
+);
+
+
+div.innerHTML = `
+
+<div class="inventory-car">
+${item.emoji}
+</div>
+
+<div class="inventory-name">
+${item.name}
+</div>
+
+<div style="text-align:center;font-weight:bold">
+
+${rarities[
+item.rarity
+].emoji}
+
+${rarities[
+item.rarity
+].name}
+
+</div>
+
+<div class="inventory-info">
+
+Owned:
+${item.count}
+
+<br>
+
+Value Each:
+$${money(averageValue)}
+
+<br>
+
+Total Value:
+$${money(item.totalValue)}
+
+</div>
+
+<button
+class="sell-button"
+onclick="sellItem('${escapeKey(key)}')">
+
+💰 SELL 1 — $${money(averageValue)}
+
+</button>
+
+`;
+
+inventory.appendChild(div);
+
+});
+
+}
+
+
+/* =========================================================
+   SELL ITEM
+========================================================= */
+
+function sellItem(key) {
+
+const item =
+game.inventory[key];
+
+if(!item)
+return;
+
+if(item.count <= 0)
+return;
+
+
+const value =
+Math.floor(
+item.totalValue /
+item.count
+);
+
+
+game.money +=
+value;
+
+item.count--;
+
+item.totalValue -=
+value;
+
+
+if(item.count <= 0) {
+
+delete game.inventory[key];
+
+}
+
+
+saveGame();
+
+updateUI();
+
+}
+
+
+/* =========================================================
+   SELL ALL
+========================================================= */
+
+function sellAll() {
+
+const items =
+Object.values(
+game.inventory
+);
+
+if(items.length === 0) {
+
+alert(
+"Your inventory is empty."
+);
+
+return;
+
+}
+
+
+let total = 0;
+
+items.forEach(
+item => {
+
+total +=
+item.totalValue;
+
+});
+
+
+if(!confirm(
+"Sell everything for $" +
+money(total) +
+"?"
+)) {
+
+return;
+
+}
+
+
+game.money +=
+total;
+
+game.inventory = {};
+
+saveGame();
+
+updateUI();
+
+}
+
+
+/* =========================================================
+   ESCAPE INVENTORY KEY
+========================================================= */
+
+function escapeKey(key) {
+
+return key
+.replace(/\\/g,"\\\\")
+.replace(/'/g,"\\'");
+
+}
+
+
+/* =========================================================
+   UPDATE UI
+========================================================= */
+
+function updateUI() {
+
+document.getElementById(
+"money"
+).textContent =
+money(game.money);
+
+
+document.getElementById(
+"totalEarned"
+).textContent =
+"$" +
+money(game.totalEarned);
+
+
+document.getElementById(
+"casesOpened"
+).textContent =
+money(game.casesOpened);
+
+
+document.getElementById(
+"income"
+).textContent =
+"$" +
+idleMoney(getIncome());
+
+
+document.getElementById(
+"workAmount"
+).textContent =
+idleMoney(getIncome());
+
+
+document.getElementById(
+"currentPay"
+).textContent =
+idleMoney(getIncome());
+
+
+document.getElementById(
+"incomeLevel"
+).textContent =
+game.incomeLevel;
+
+
+document.getElementById(
+"incomeCost"
+).textContent =
+money(getIncomeCost());
+
+document.getElementById(
+"incomeTier"
+).textContent =
+getIncomeTier();
+
+document.getElementById(
+"nextPay"
+).textContent =
+idleMoney(getNextIncome());
+
+
+document.getElementById(
+"idleIncome"
+).textContent =
+"$" + idleMoney(getIdleRate()) + "/sec";
+
+
+document.getElementById(
+"idleLevel"
+).textContent =
+game.idleLevel;
+
+
+document.getElementById(
+"idleRate"
+).textContent =
+idleMoney(getIdleRate());
+
+
+document.getElementById(
+"nextIdleRate"
+).textContent =
+idleMoney(getNextIdleRate());
+
+
+document.getElementById(
+"idleCost"
+).textContent =
+money(getIdleCost());
+
+
+document.getElementById(
+"luck"
+).textContent =
+getLuck().toFixed(2) +
+"x";
+
+
+document.getElementById(
+"luckDisplay"
+).textContent =
+getLuck().toFixed(2) +
+"x";
+
+
+document.getElementById(
+"luckLevel"
+).textContent =
+game.luckLevel;
+
+
+document.getElementById(
+"luckCost"
+).textContent =
+money(getLuckCost());
+
+
+updateInventory();
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetGame() {
+
+if(!confirm(
+"Reset ALL progress?"
+)) {
+
+return;
+
+}
+
+localStorage.removeItem(
+"caseEmpireSaveFreshV2"
+);
+
+location.reload();
+
+}
+
+
+/* =========================================================
+   START GAME
+========================================================= */
+
+loadGame();
+
+</script>
+
+
+<script>
+/* Mobile app behavior: prevent Safari pinch/double-tap zoom and text selection. */
+document.addEventListener('gesturestart', function(e) { e.preventDefault(); }, { passive: false });
+document.addEventListener('gesturechange', function(e) { e.preventDefault(); }, { passive: false });
+document.addEventListener('gestureend', function(e) { e.preventDefault(); }, { passive: false });
+document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+document.addEventListener('selectstart', function(e) { e.preventDefault(); });
+document.addEventListener('dragstart', function(e) { e.preventDefault(); });
+</script>
+
+</body>
+</html>
+```
